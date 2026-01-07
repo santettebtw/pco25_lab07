@@ -61,6 +61,7 @@ unsigned int PcoSalon::getNbClient()
 void PcoSalon::goToSleep()
 {
     // TODO
+
 }
 
 

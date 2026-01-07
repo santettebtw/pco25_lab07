@@ -47,6 +47,7 @@ public:
      * \return retourne vrai si le salon est ouvert
      */
     virtual bool isInService() = 0;
+
 };
 
 #endif // SALONBARBERINTERFACE_H
