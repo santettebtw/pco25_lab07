@@ -177,7 +177,10 @@ protected:
     PcoMutex _mutex;
     #endif
     
-    // TODO
+	std::vector<int> _clients; // list of client ids, -1 if empty
+	int _writeIndex, _readIndex;
+	int _nbClients, _capacity;
+	PcoConditionVariable _waitNotFull, _waitNotEmpty;
 };
 
 #endif // PCOSALON_H
