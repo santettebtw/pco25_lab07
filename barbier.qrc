@@ -1,0 +1,45 @@
+<RCC>
+    <qresource prefix="/">
+        <file>assets/actors/p0L.png</file>
+        <file>assets/actors/p0M.png</file>
+        <file>assets/actors/p0S.png</file>
+        <file>assets/actors/p1L.png</file>
+        <file>assets/actors/p1M.png</file>
+        <file>assets/actors/p1S.png</file>
+        <file>assets/actors/p2L.png</file>
+        <file>assets/actors/p2M.png</file>
+        <file>assets/actors/p2S.png</file>
+        <file>assets/actors/p3L.png</file>
+        <file>assets/actors/p3M.png</file>
+        <file>assets/actors/p3S.png</file>
+        <file>assets/actors/p4L.png</file>
+        <file>assets/actors/p4M.png</file>
+        <file>assets/actors/p4S.png</file>
+        <file>assets/actors/p5L.png</file>
+        <file>assets/actors/p5M.png</file>
+        <file>assets/actors/p5S.png</file>
+        <file>assets/actors/p6L.png</file>
+        <file>assets/actors/p6M.png</file>
+        <file>assets/actors/p6S.png</file>
+        <file>assets/actors/p7L.png</file>
+        <file>assets/actors/p7M.png</file>
+        <file>assets/actors/p7S.png</file>
+        <file>assets/actors/p8L.png</file>
+        <file>assets/actors/p8M.png</file>
+        <file>assets/actors/p8S.png</file>
+        <file>assets/barber.png</file>
+        <file>assets/chair_512.png</file>
+        <file>assets/client_bald.png</file>
+        <file>assets/client_cut.png</file>
+        <file>assets/client_haired.png</file>
+        <file>assets/outside.png</file>
+        <file>assets/salon.png</file>
+        <file>assets/salon_2.png</file>
+        <file>assets/scisor.png</file>
+        <file>assets/seat.png</file>
+        <file>assets/sleeping.png</file>
+        <file>assets/waiting_chair.png</file>
+        <file>assets/working_chair.png</file>
+        <file>assets/zzz-zzzz.gif</file>
+    </qresource>
+</RCC>
