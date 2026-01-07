@@ -14,7 +14,8 @@
 #include <iostream>
 
 PcoSalon::PcoSalon(GraphicSalonInterface *interface, unsigned int capacity)
-    : _interface(interface)
+    : _interface(interface), _clients(capacity, -1), _writeIndex(0), _readIndex(0),
+	_nbClients(0), _capacity(capacity)
 {
     // TODO
 }
@@ -24,7 +25,14 @@ PcoSalon::PcoSalon(GraphicSalonInterface *interface, unsigned int capacity)
  *******************************************/
 bool PcoSalon::accessSalon(unsigned clientId)
 {
-    // TODO
+	_mutex.lock();
+	while (_nbClients >= _capacity) {
+		_waitNotFull.wait(&_mutex);
+	}
+	_clients[_writeIndex] = clientId;
+	_writeIndex = (_writeIndex + 1) % _capacity;
+	_nbClients++;
+	_mutex.unlock();
 }
 
 
@@ -55,15 +63,13 @@ void PcoSalon::goHome(unsigned clientId){
  *******************************************/
 unsigned int PcoSalon::getNbClient()
 {
-    // TODO
+	return _nbClients;
 }
 
 void PcoSalon::goToSleep()
 {
-    // TODO
-
+	// TODO
 }
-
 
 void PcoSalon::pickNextClient()
 {
