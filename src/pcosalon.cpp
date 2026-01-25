@@ -14,9 +14,9 @@
 #include <iostream>
 
 PcoSalon::PcoSalon(GraphicSalonInterface *interface, unsigned int capacity)
-    : _interface(interface)
+    : _interface(interface), _waitingClientsCount(0), _isInService(true),
+      _isBarberAsleep(false), _isClientOnWorkChair(false), _waitingSeats(capacity, true)
 {
-    // TODO
 }
 
 /********************************************
@@ -24,29 +24,87 @@ PcoSalon::PcoSalon(GraphicSalonInterface *interface, unsigned int capacity)
  *******************************************/
 bool PcoSalon::accessSalon(unsigned clientId)
 {
-    // TODO
+    monitorIn();
+
+    if (!_isInService) {
+        monitorOut();
+        return false;
+    }
+
+    // find available seat
+    size_t seatIndex = 0;
+    for (; seatIndex < _waitingSeats.size(); ++seatIndex) {
+        if (_waitingSeats[seatIndex]) {
+            break;
+        }
+    }
+
+    if (seatIndex == _waitingSeats.size()) {
+        monitorOut();
+        return false;
+    }
+
+    _waitingSeats[seatIndex] = false;
+    animationClientSitOnChair(clientId, seatIndex);
+
+    if (!_isInService) {
+        _waitingSeats[seatIndex] = true;
+        monitorOut();
+        return false;
+    }
+
+    // wake barber if first client, otherwise wait for turn
+    _waitingClientsCount++;
+    if (_isBarberAsleep && _waitingClientsCount == 1) {
+        signal(_barberWaitingForClient);
+    } else {
+        wait(_clientWaitingForTurn);
+    }
+    _waitingSeats[seatIndex] = true;
+
+    monitorOut();
+    return true;
 }
 
 
 void PcoSalon::goForHairCut(unsigned clientId)
 {
-    // TODO
+    monitorIn();
+
+    animationClientSitOnWorkChair(clientId);
+
+    _isClientOnWorkChair = true;
+
+    signal(_barberWaitingForClientAtChair);
+    wait(_clientWaitingForHaircut);
+    
+    _isClientOnWorkChair = false;
+    _waitingClientsCount--;
+
+    monitorOut();
 }
 
 void PcoSalon::waitingForHairToGrow(unsigned clientId)
 {
-    // TODO
+    monitorIn();
+    animationClientWaitForHairToGrow(clientId);
+    monitorOut();
 }
 
 
 void PcoSalon::walkAround(unsigned clientId)
 {
-    // TODO
+    monitorIn();
+    animationClientWalkAround(clientId);
+    monitorOut();
 }
 
 
-void PcoSalon::goHome(unsigned clientId){
-    // TODO
+void PcoSalon::goHome(unsigned clientId)
+{
+    monitorIn();
+    animationClientGoHome(clientId);
+    monitorOut();
 }
 
 
@@ -55,30 +113,44 @@ void PcoSalon::goHome(unsigned clientId){
  *******************************************/
 unsigned int PcoSalon::getNbClient()
 {
-    // TODO
+    return _waitingClientsCount;
 }
 
 void PcoSalon::goToSleep()
 {
-    // TODO
-}
+    monitorIn();
 
+    _isBarberAsleep = true;
+    animationBarberGoToSleep();
+    wait(_barberWaitingForClient);
+    animationWakeUpBarber();
+    _isBarberAsleep = false;
+    
+    monitorOut();
+}
 
 void PcoSalon::pickNextClient()
 {
-    // TODO
+    monitorIn();
+    signal(_clientWaitingForTurn);
+    monitorOut();
 }
-
 
 void PcoSalon::waitClientAtChair()
 {
-    // TODO
+    monitorIn();
+    if (!_isClientOnWorkChair) {
+        wait(_barberWaitingForClientAtChair);
+    }
+    monitorOut();
 }
-
 
 void PcoSalon::beautifyClient()
 {
-    // TODO
+    monitorIn();
+    animationBarberCuttingHair();
+    signal(_clientWaitingForHaircut);
+    monitorOut();
 }
 
 /********************************************
@@ -86,13 +158,22 @@ void PcoSalon::beautifyClient()
  *******************************************/
 bool PcoSalon::isInService()
 {
-    // TODO
+    return _isInService;
 }
-
 
 void PcoSalon::endService()
 {
-    // TODO
+    monitorIn();
+
+    _isInService = false;
+    // wake up all waiting threads for clean termination
+    for (size_t i = 0; i < _waitingClientsCount; ++i) {
+        signal(_clientWaitingForTurn);
+    }
+    signal(_barberWaitingForClientAtChair);
+    signal(_clientWaitingForHaircut);
+    
+    monitorOut();
 }
 
 /********************************************
