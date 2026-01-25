@@ -1,7 +1,7 @@
 # PCO: Rapport labo 7
 
-**Auteur:** [Votre nom]  
-**Date:** [Date]  
+**Auteur:** Anthony Pfister, Santiago Sugranes  
+**Date:** 25.01.2026  
 **Cours:** PCO2025 lab07, HEIG
 
 ---
