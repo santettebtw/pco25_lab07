@@ -176,13 +176,17 @@ protected:
     #if !PCO_USE_HOARE_MONITOR
     PcoMutex _mutex;
     #endif
-    bool _isInService = true ;
-    bool _isAsleep = false;
-	std::vector<std::pair<unsigned,PcoConditionVariable *>> _clients; // list of client ids, -1 if empty
-	int _writeIndex, _readIndex;
 
-	int _nbClients, _capacity;
-	PcoConditionVariable _waitNotFull, _waitNotEmpty;
+    Condition _barberWaitingForClient; // condition for barber to wait when no clients are present
+    Condition _clientWaitingForTurn; // condition for clients to wait their turn (FIFO order guaranteed by Hoare monitor)
+    Condition _barberWaitingForClientAtChair; // condition for barber to wait until client sits on work chair
+    Condition _clientWaitingForHaircut; // condition for client to wait until haircut is finished
+
+    unsigned int _waitingClientsCount; // number of clients currently in the salon (waiting or being served)
+    bool _isInService; // whether the salon is open
+    bool _isBarberAsleep; // whether the barber is currently sleeping
+    bool _isClientOnWorkChair; // whether a client is currently sitting on the work chair
+    std::vector<bool> _waitingSeats; // availability of waiting seats (true = available, false = occupied)
 };
 
 #endif // PCOSALON_H
